@@ -1,0 +1,1 @@
+int ANSWER = 42;

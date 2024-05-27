@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>RhubarbGeekNz.CPreProcessor.PowerShell</AssemblyName>
+    <Copyright>Copyright © 2024 Roger Brown</Copyright>
+    <Version>1.0.0</Version>
+    <AssemblyTitle>PowerShell Cmdlet for C preprocessor</AssemblyTitle>
+    <Product>C preprocessor for PowerShell</Product>
+    <Company>rhubarb-geek-nz</Company>
+    <PackageId>rhubarb-geek-nz.PSCPreProcessor</PackageId>
+    <Title>C preprocessor for PowerShell</Title>
+    <Description>Implements C preprocessor as a pipeline allowing direct usage in PowerShell</Description>
+    <Authors>Roger Brown</Authors>
+    <PackageProjectUrl>https://github.com/rhubarb-geek-nz/cpp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rhubarb-geek-nz/cpp.git</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>CPreProcessor</PackageTags>
+    <CertificateThumbprint>601A8B683F791E51F647D34AD102C38DA4DDB65F</CertificateThumbprint>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="rhubarb-geek-nz.CPreProcessor" Version="$(Version)"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="Sign" AfterTargets="Compile" Condition=" '$(Configuration)' == 'Release' AND '$(OS)' == 'Windows_NT' ">
+    <ItemGroup>
+        <FileToSign Include="$(IntermediateOutputPath)$(TargetFileName)" />
+    </ItemGroup>
+    <Message Importance="high" Text="Signing assemblies: @(FileToSign)" />
+    <SignFile SigningTarget="@(FileToSign)" CertificateThumbprint="$(CertificateThumbprint)" TimestampUrl="http://timestamp.digicert.com" />
+  </Target>
+
+  <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
+    <ItemGroup>
+      <FilesToDelete Include="$(PublishDir)*.deps.json" />
+      <FilesToDelete Include="$(PublishDir)*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
+    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
+    <RemoveDir Directories="$(PublishDir)runtimes;$(PublishDir)sqlite-netStandard20-binary" />
+    <Delete Files="$(OutDir)$(PackageId).psd1" />
+  </Target>
+
+</Project>
