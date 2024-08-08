@@ -44,7 +44,7 @@ namespace RhubarbGeekNz.CPreProcessor.PowerShell
         public void TestDefineOnly()
         {
             List<string> result = Invoke("('#define FOO') | Invoke-CPreProcessor");
-            Assert.AreEqual(0,result.Count);
+            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
@@ -126,6 +126,28 @@ namespace RhubarbGeekNz.CPreProcessor.PowerShell
             catch (ActionPreferenceStopException ex)
             {
                 wasCaught = ex.Message.EndsWith("#endif");
+            }
+            Assert.IsTrue(wasCaught);
+        }
+
+        [TestMethod]
+        public void TestEmptyString()
+        {
+            List<string> result = Invoke("('foo','','bar') | Invoke-CPreProcessor -ErrorAction 'Stop'");
+            Assert.AreEqual(3, result.Count);
+        }
+
+        [TestMethod]
+        public void TestNullString()
+        {
+            bool wasCaught = false;
+            try
+            {
+                Invoke("('foo',$null,'bar') | Invoke-CPreProcessor -ErrorAction 'Stop'");
+            }
+            catch (ActionPreferenceStopException)
+            {
+                wasCaught = true;
             }
             Assert.IsTrue(wasCaught);
         }

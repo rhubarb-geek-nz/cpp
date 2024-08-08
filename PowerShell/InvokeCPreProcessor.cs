@@ -12,6 +12,7 @@ namespace RhubarbGeekNz.CPreProcessor.PowerShell
     sealed public class InvokeCPreProcessor : PSCmdlet, IDisposable
     {
         [Parameter(Mandatory = true, ValueFromPipeline = true)]
+        [AllowEmptyString]
         public string InputString;
 
         [Parameter]

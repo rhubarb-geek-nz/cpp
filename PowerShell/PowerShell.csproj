@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>RhubarbGeekNz.CPreProcessor.PowerShell</AssemblyName>
     <Copyright>Copyright © 2024 Roger Brown</Copyright>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <AssemblyTitle>PowerShell Cmdlet for C preprocessor</AssemblyTitle>
     <Product>C preprocessor for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
@@ -25,7 +25,7 @@
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="rhubarb-geek-nz.CPreProcessor" Version="$(Version)"/>
+    <PackageReference Include="rhubarb-geek-nz.CPreProcessor" Version="1.0.0"/>
   </ItemGroup>
 
   <ItemGroup>
